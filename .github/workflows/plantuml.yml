@@ -2,11 +2,7 @@ name: PlantUML Diagrams
 
 on:
   push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
 
 jobs:
   generate-diagrams:
@@ -47,5 +43,5 @@ jobs:
           echo "No diagram changes to commit."
         else
           git commit -m "[AUTO] Diagrams updated"
-          git push origin master
+          git push
         fi
