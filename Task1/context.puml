@@ -1,0 +1,4 @@
+@startuml context.puml
+title Livestock Monitoring System - Context Diagram
+
+@enduml
