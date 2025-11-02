@@ -12,7 +12,7 @@ Person(farm_manager, "Farm Operations Manager", "Manages multiple farms")
 Person(farm_supervisor, "Farm Supervisor", "Manages and monitors livestock and farm systems on-site")
 Person(ba, "Business Analyst", "Analyzes metrics")
 
-' Single farm boundary
+' Systems
 
 System(lms, "Livestock Monitoring System", "Monitors livestock health and location using IoT devices")
 System_Ext(ext_notifications_local, "On-site Notification Service", "Sends alerts and notifications using local infrastructure")
