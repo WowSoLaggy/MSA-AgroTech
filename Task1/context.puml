@@ -1,4 +1,36 @@
 @startuml context.puml
 title Livestock Monitoring System - Context Diagram
 
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+' Actors
+
+Person(farm_manager, "Farm Operations Manager", "Manages multiple farms")
+Person(farm_supervisor, "Farm Supervisor", "Manages and monitors livestock and farm systems on-site")
+Person(ba, "Business Analyst", "Analyzes metrics")
+
+' Single farm boundary
+
+System(lms, "Livestock Monitoring System", "Monitors livestock health and location using IoT devices")
+System_Ext(ext_notifications_local, "On-site Notification Service", "Sends alerts and notifications using local infrastructure")
+System_Ext(ext_notifications_central, "Central Notification Service", "Sends alerts and notifications")
+System_Ext(video_analytics, "Video Analytics System", "Analyzes video feeds to detect livestock health and location issues")
+System_Ext(iot_devices, "IoT Devices", "Collects real-time data on food supply, water levels, and water filtration system status")
+
+Rel(lms, ext_notifications_local, "Sends on-site alerts and notifications")
+Rel(ext_notifications_local, farm_supervisor, "Sends on-site alerts and notifications to local supervisor")
+Rel(farm_supervisor, lms, "Manages")
+
+Rel(farm_manager, lms, "Oversees multiple farms")
+Rel(ba, lms, "Analyzes")
+Rel(lms, ext_notifications_central, "Sends alerts and notifications to management")
+Rel(ext_notifications_central, farm_manager, "Sends alerts and notifications to management")
+
+Rel(lms, video_analytics, "Receives analyzed video data")
+Rel(lms, iot_devices, "Receives real-time data")
+
+
 @enduml
