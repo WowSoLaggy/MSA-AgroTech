@@ -1,4 +1,4 @@
-@startuml container.puml
+@startuml container_central.puml
 title Livestock Monitoring System - Container Diagram
 
 top to bottom direction
@@ -20,7 +20,7 @@ System_Ext(central_notification_ext, "Central Notification System", "Sends alert
 
 System_Boundary(lms_boundary, "Livestock Monitoring System") {
 
-  Container(broker, "Message Broker", "TBD", "Handles communication between central system and farm systems.")
+  Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems.")
 
   ' Central System Boundary
 
@@ -29,11 +29,8 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
       Container(web_app, "Web Application", "React/Angular + Auth", "Role-based UI for farm management")
       Container(mobile_app, "Mobile Application", "React Native/Flutter + Auth", "Role-based mobile access")
     }
-    Container(api_central, "Central API Application", "TBD", "Provides farm management functionality via API")
-    System_Boundary(data_central_boundary, "Data Management") {
-      Container(data_listener_central, "Central Data Listener", "TBD", "Processes incoming data from farms")
-      ContainerDb(db_central, "Central Database", "Po", "Stores user data, farm data, and metrics")
-    }
+    Container(api_central, "Central Management App", "Python", "Provides farm management functionality via API")
+    ContainerDb(db_central, "Central Database", "PostgreSQL", "Stores user data, farm data, and metrics")
 
     Rel(farm_manager, web_app, "Uses", "Global view")
     Rel(farm_manager, mobile_app, "Uses", "Global view")
@@ -47,10 +44,7 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
 
     Rel(api_central, bi_tools_ext, "Provides metrics to", "JSON / HTTPS")
     Rel(api_central, central_notification_ext, "Sends alerts to", "SMS/Email/Push")
-    Rel(api_central, broker, "Sends commands to", "JSON / HTTPS")
-
-    Rel(broker, data_listener_central, "Is read by", "JSON / HTTPS")
-    Rel(data_listener_central, db_central, "Writes data to", "SQL / TCP")
+    Rel(api_central, broker, "Sends commands to / receives data from", "JSON / HTTPS")
   }
 }
 
