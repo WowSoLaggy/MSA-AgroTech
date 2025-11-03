@@ -15,22 +15,20 @@ Person(ba, "Business Analyst", "Analyzes metrics")
 ' Systems
 
 System(lms, "Livestock Monitoring System", "Monitors livestock health and location using IoT devices")
-System_Ext(ext_notifications_local, "On-site Notification Service", "Sends alerts and notifications using local infrastructure")
-System_Ext(ext_notifications_central, "Central Notification Service", "Sends alerts and notifications")
-System_Ext(video_analytics, "Video Analytics System", "Analyzes video feeds to detect livestock health and location issues")
-System_Ext(iot_devices, "IoT Devices", "Collects real-time data on food supply, water levels, and water filtration system status")
+System_Ext(notifications_local_ext, "On-site Notification Service", "Sends alerts and notifications using local infrastructure")
+System_Ext(notifications_central_ext, "Central Notification Service", "Sends alerts and notifications")
+System_Ext(iot_ext, "IoT Devices", "Collects and analyzes data from various sensors and cameras")
 
-Rel(lms, ext_notifications_local, "Sends on-site alerts and notifications")
-Rel(ext_notifications_local, farm_supervisor, "Sends on-site alerts and notifications to local supervisor")
+Rel(lms, notifications_local_ext, "Sends on-site alerts and notifications")
+Rel(notifications_local_ext, farm_supervisor, "Sends on-site alerts and notifications to local supervisor")
 Rel(farm_supervisor, lms, "Manages")
 
 Rel(farm_manager, lms, "Oversees multiple farms")
 Rel(ba, lms, "Analyzes")
-Rel(lms, ext_notifications_central, "Sends alerts and notifications to management")
-Rel(ext_notifications_central, farm_manager, "Sends alerts and notifications to management")
+Rel(lms, notifications_central_ext, "Sends alerts and notifications to management")
+Rel(notifications_central_ext, farm_manager, "Sends alerts and notifications to management")
 
-Rel(lms, video_analytics, "Receives analyzed video data")
-Rel(lms, iot_devices, "Receives real-time data")
+Rel(iot_ext, lms, "Receives real-time data")
 
 
 @enduml
