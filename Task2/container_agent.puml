@@ -33,7 +33,7 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
     }
     Container(agent_broker, "Agent Message Broker", "RabbitMQ", "Handle communication between containers of the single farm")
     Container(agent_management_app, "Agent Management App", "Python", "A single entry point for the farm management")
-    Container(agent_notifier, "Agent Notification Service", "Python", "Sends and logs local alerts to farm staff")
+    Container(agent_notifier, "Agent Notification Service", "Python", "Sends local alerts to farm staff")
     ContainerDb(db_farm, "Agent Database", "PostgreSQL", "Stores local farm data and device states")
 
     Rel(video_cameras_ext, video_analytics, "Sends video feeds", "RTSP / ONVIF")

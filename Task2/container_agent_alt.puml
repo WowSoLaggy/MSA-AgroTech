@@ -31,7 +31,7 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
       Container(feeder_controller, "Feeder Controller", "Python", "Controls automated feeding systems")
       Container(water_controller, "Water System Controller", "Python", "Controls water quality systems")
     }
-    Container(agent_notifier, "Agent Notification Service", "Python", "Sends and logs local alerts to farm staff")
+    Container(agent_notifier, "Agent Notification Service", "Python", "Sends local alerts to farm staff")
 
     Rel(video_cameras_ext, video_analytics, "Sends video feeds", "RTSP / ONVIF")
     Rel(neural_network_ext, video_analytics, "Provides video analysis", "gRPC")

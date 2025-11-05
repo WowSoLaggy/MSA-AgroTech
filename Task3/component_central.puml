@@ -1,0 +1,40 @@
+@startuml component_central
+title Livestock Monitoring System - Component Diagram (Central System)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+System_Ext(bi_tools_ext, "BI Tools", "Business Intelligence tools for data analysis and reporting")
+
+System_Boundary(lms, "Livestock Monitoring System") {
+  Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems")
+
+  System_Boundary(central_system, "Central System") {
+    Container(web_app, "Web Application", "React / Angular + Auth", "Role-based UI for farm management")
+    Container(mob_app, "Mobile Application", "React Native / Flutter + Auth", "Role-based mobile access")
+    ContainerDb(central_db, "Central Database", "PostgreSQL", "Stores user data, farm data, and metrics")
+
+    Container_Boundary(central_app, "Central Management App") {
+      Component(backend, "Backend API", "Node.js / Express", "Handles API requests from web and mobile apps")
+      Component(auth_controller, "AuthController", "Handles authentication and authorization")
+      Component(user_controller, "UserController", "Manages user profiles and roles")
+      Component(business_logic, "Business Logic", "Business logic for central management")
+      Component(repository_layer, "Repository Layer", "Data access logic for central management")
+
+      Rel(web_app, backend, "Sends API requests", "HTTPS / REST")
+      Rel(mob_app, backend, "Sends API requests", "HTTPS / REST")
+      Rel(backend, user_controller, "Retrieves / updates user data")
+      Rel(backend, auth_controller, "Handles authentication requests")
+      Rel(backend, business_logic, "Calls business logic")
+      Rel(business_logic, repository_layer, "Reads / Writes data")
+      Rel(business_logic, broker, "Sends / Receives messages", "AMQP")
+      Rel(business_logic, bi_tools_ext, "Provides data for analysis", "HTTPS / REST")
+      Rel(repository_layer, central_db, "Reads/Writes data", "SQL / TCP")
+    }
+  }
+}
+
+
+@enduml

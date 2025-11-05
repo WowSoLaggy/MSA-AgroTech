@@ -1,0 +1,60 @@
+@startuml component_agent_alt
+title Livestock Monitoring System - Component Diagram (Agent System, Alternative Option)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+System_Ext(video_cameras, "Video Cameras", "Provides video feeds from the farm")
+System_Ext(nn_service, "Neural Network Service", "Processes video feeds for analytics")
+System_Ext(feeder_system, "Feeder Control System", "Controls feeding of livestock")
+System_Ext(water_system, "Water Filtering System", "Manages water quality systems")
+
+System_Boundary(lms, "Livestock Monitoring System") {
+  Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems")
+
+  System_Boundary(central_system, "Agent System") {
+    Container(notification_service, "Agent Notification Service", "Python", "Sends local alerts to farm staff")
+
+    Container_Boundary(video_analytics, "Video Analytics") {
+      Component(video_processor, "Video Processor", "Processes video feeds")
+      Component(alarm_comp_1, "Alarm Component", "Generates alarms based on video analytics")
+      Component(messaging_comp_1, "Messaging Component", "Handles messaging with central system message broker")
+
+      Rel(video_cameras, video_processor, "Sends video feeds", "RTSP / ONVIF")
+      Rel(nn_service, video_processor, "Provides analytics", "gRPC")
+      Rel(alarm_comp_1, notification_service, "Sends local alerts", "JSON / HTTPS")
+      Rel(video_processor, alarm_comp_1, "Triggers alarms based on analytics")
+      Rel(video_processor, messaging_comp_1, "Sends / Receives messages to / from central system")
+      Rel(messaging_comp_1, broker, "Sends / Receives messages", "MQTT")
+    }
+
+    Container_Boundary(feeder_controller, "Feeder Controller") {
+      Component(feeder_controller_logic, "Feeders Controller", "Manages feeding schedules and controls feeders")
+      Component(alarm_comp_2, "Alarm Component", "Generates alarms based on feeder status")
+      Component(messaging_comp_2, "Messaging Component", "Handles messaging with central system message broker")
+
+      Rel(feeder_system, feeder_controller_logic, "Sends video feeds", "RTSP / ONVIF")
+      Rel(alarm_comp_2, notification_service, "Sends local alerts", "JSON / HTTPS")
+      Rel(feeder_controller_logic, alarm_comp_2, "Triggers alarms based on analytics")
+      Rel(feeder_controller_logic, messaging_comp_2, "Sends / Receives messages to / from central system")
+      Rel(messaging_comp_2, broker, "Sends / Receives messages", "MQTT")
+    }
+
+    Container_Boundary(water_controller, "Water System Controller") {
+      Component(water_controller_logic, "Water System Controller", "Manages water quality and controls water systems")
+      Component(alarm_comp_3, "Alarm Component", "Generates alarms based on feeder status")
+      Component(messaging_comp_3, "Messaging Component", "Handles messaging with central system message broker")
+
+      Rel(water_system, water_controller_logic, "Sends video feeds", "RTSP / ONVIF")
+      Rel(alarm_comp_3, notification_service, "Sends local alerts", "JSON / HTTPS")
+      Rel(water_controller_logic, alarm_comp_3, "Triggers alarms based on analytics")
+      Rel(water_controller_logic, messaging_comp_3, "Sends / Receives messages to / from central system")
+      Rel(messaging_comp_3, broker, "Sends / Receives messages", "MQTT")
+    }
+  }
+}
+
+
+@enduml
