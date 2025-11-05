@@ -1,0 +1,59 @@
+@startuml code_central
+title Livestock Monitoring System - Code Diagram (Central System)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+package "Business Logic" {
+  class BusinessLogic {
+  }
+
+  class BusinessLogicImpl {
+  }
+
+  class Message {
+    + String message
+  }
+  class Command {
+    + String command
+  }
+  class Data {
+    + Object data
+  }
+  class CustomMetrics {
+    + Object metrics
+  }
+
+  class MessageHandler {
+    + handleMessage(Message)
+  }
+  class CommandSender {
+    + sendCommand(Command)
+  }
+  class DataProcessor {
+    + processData(Data)
+  }
+
+  class BrokerConnection {
+    + connect()
+    + disconnect()
+  }
+
+  BusinessLogic --> BusinessLogicImpl : "is implemented by"
+  BusinessLogicImpl --> BrokerConnection : "uses"
+  BusinessLogicImpl --> MessageHandler : "delegates to"
+  BusinessLogicImpl --> CommandSender : "delegates to"
+  BusinessLogicImpl --> DataProcessor : "delegates to"
+  DataProcessor --> Data : "processes"
+  DataProcessor --> CustomMetrics : "generates"
+  MessageHandler --> Data : "produces"
+  BrokerConnection --> Command : "sends"
+  BrokerConnection --> Message : "receives"
+  MessageHandler --> Message : "processes"
+  CommandSender --> Command : "creates"
+}
+
+
+@enduml

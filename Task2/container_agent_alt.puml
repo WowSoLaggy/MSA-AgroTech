@@ -35,8 +35,8 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
 
     Rel(video_cameras_ext, video_analytics, "Sends video feeds", "RTSP / ONVIF")
     Rel(neural_network_ext, video_analytics, "Provides video analysis", "gRPC")
-    Rel(feeder_system_ext, feeder_controller, "Provides feeder metrics and control", "TBD")
-    Rel(water_system_ext, water_controller, "Provides water quality metrics and control", "TBD")
+    Rel(feeder_system_ext, feeder_controller, "Provides feeder metrics and control", "HTTPS")
+    Rel(water_system_ext, water_controller, "Provides water quality metrics and control", "HTTPS")
     Rel(edge_devices_boundary, broker, "Sends data, receives commands", "MQTT")
     Rel(edge_devices_boundary, agent_notifier, "Sends alerts to", "JSON / HTTPS")
     Rel(agent_notifier, local_notification_ext, "Sends alerts and notifications", "JSON / HTTPS")

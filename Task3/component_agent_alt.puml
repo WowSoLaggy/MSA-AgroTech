@@ -35,7 +35,7 @@ System_Boundary(lms, "Livestock Monitoring System") {
       Component(alarm_comp_2, "Alarm Component", "Generates alarms based on feeder status")
       Component(messaging_comp_2, "Messaging Component", "Handles messaging with central system message broker")
 
-      Rel(feeder_system, feeder_controller_logic, "Sends video feeds", "RTSP / ONVIF")
+      Rel(feeder_system, feeder_controller_logic, "Sends feeder status", "HTTPS")
       Rel(alarm_comp_2, notification_service, "Sends local alerts", "JSON / HTTPS")
       Rel(feeder_controller_logic, alarm_comp_2, "Triggers alarms based on analytics")
       Rel(feeder_controller_logic, messaging_comp_2, "Sends / Receives messages to / from central system")
@@ -47,7 +47,7 @@ System_Boundary(lms, "Livestock Monitoring System") {
       Component(alarm_comp_3, "Alarm Component", "Generates alarms based on feeder status")
       Component(messaging_comp_3, "Messaging Component", "Handles messaging with central system message broker")
 
-      Rel(water_system, water_controller_logic, "Sends video feeds", "RTSP / ONVIF")
+      Rel(water_system, water_controller_logic, "Sends water system status", "HTTPS")
       Rel(alarm_comp_3, notification_service, "Sends local alerts", "JSON / HTTPS")
       Rel(water_controller_logic, alarm_comp_3, "Triggers alarms based on analytics")
       Rel(water_controller_logic, messaging_comp_3, "Sends / Receives messages to / from central system")
