@@ -1,0 +1,37 @@
+@startuml component_agent
+title Livestock Monitoring System - Component Diagram (Agent System)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+System_Boundary(lms, "Livestock Monitoring System") {
+  Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems")
+
+  System_Boundary(central_system, "Agent System") {
+    Container(agent_broker, "Agent Message Broker", "RabbitMQ", "Handles communication between edge devices and agent management app")
+    Container(notification_service, "Agent Notification Service", "Python", "Sends local alerts to farm staff")
+    ContainerDb(agent_db, "Agent Database", "PostgreSQL", "Stores local farm data and device states")
+
+    Container_Boundary(central_app, "Agent Management App") {
+      Component(edge_controller, "Edge Devices Controller", "Manages communication with edge devices")
+      Component(business_logic, "Business Logic", "Business logic for agent management")
+      Component(messaging_service, "Messaging Service", "Handles messaging with central system")
+      Component(alarm_service, "Alarm Service", "Handles local alarms and notifications")
+      Component(repository_layer, "Repository Layer", "Data access logic for central management")
+
+      Rel(agent_broker, edge_controller, "Sends data, receives commands", "MQTT")
+      Rel(edge_controller, business_logic, "Sends data / receives commands")
+      Rel(business_logic, messaging_service, "Sends / Receives messages to/from central system", "AMQP")
+      Rel(messaging_service, broker, "Sends / Receives messages", "AMQP")
+      Rel(business_logic, alarm_service, "Triggers local alarms")
+      Rel(alarm_service, notification_service, "Sends local alerts", "HTTPS / REST")
+      Rel(business_logic, repository_layer, "Reads / Writes data")
+      Rel(repository_layer, agent_db, "Reads/Writes data", "SQL / TCP")
+    }
+  }
+}
+
+
+@enduml

@@ -1,0 +1,57 @@
+@startuml container_central.puml
+title Livestock Monitoring System - Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+' Actors
+
+Person(farm_manager, "Farm Operations Manager", "Manages multiple farms")
+Person(farm_supervisor, "Farm Supervisor", "Manages and monitors livestock and farm systems on-site")
+Person(ba, "Business Analyst", "Analyzes metrics")
+
+' External Systems
+
+System_Ext(bi_tools_ext, "BI Tools", "Business Intelligence tools for data analysis and reporting")
+System_Ext(central_notification_ext, "Central Notification System", "Sends alerts to management via SMS/Email/Push")
+
+' LMS
+
+System_Boundary(lms_boundary, "Livestock Monitoring System") {
+
+  Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems.")
+  System_Ext(agent_system_ext, "Agent Systems", "On-site systems managing individual farms")
+
+  ' Central System Boundary
+
+  System_Boundary(system_central, "Central System") {
+    System_Boundary(user_apps_boundary, "User Applications") {
+      Container(web_app, "Web Application", "React/Angular + Auth", "Role-based UI for farm management")
+      Container(mobile_app, "Mobile Application", "React Native/Flutter + Auth", "Role-based mobile access")
+    }
+    Container(api_central, "Central Management App", "Python", "Provides farm management functionality via API")
+    ContainerDb(db_central, "Central Database", "PostgreSQL", "Stores user data, farm data, and metrics")
+
+    Rel(farm_manager, web_app, "Uses", "Global view")
+    Rel(farm_manager, mobile_app, "Uses", "Global view")
+    
+    Rel(farm_supervisor, web_app, "Uses", "Farm-specific view")
+    Rel(farm_supervisor, mobile_app, "Uses", "Farm-specific view")
+
+    Rel(web_app, api_central, "API calls with user context", "JSON / HTTPS")
+    Rel(mobile_app, api_central, "API calls with user context", "JSON / HTTPS")
+    Rel(api_central, db_central, "Reads from and writes to", "SQL / TCP")
+
+    Rel(api_central, bi_tools_ext, "Provides metrics to", "JSON / HTTPS")
+    Rel(api_central, central_notification_ext, "Sends alerts to", "SMS/Email/Push")
+    Rel(api_central, broker, "Sends commands to / receives data from", "JSON / HTTPS")
+    Rel_R(broker, agent_system_ext, "Communicates with", "JSON / HTTPS", "1..*")
+  }
+}
+
+Rel(ba, bi_tools_ext, "Uses", "Data analysis and reporting")
+Rel(central_notification_ext, farm_manager, "Notifies via", "SMS/Email/Push")
+
+
+@enduml

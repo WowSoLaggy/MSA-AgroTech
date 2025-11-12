@@ -1,0 +1,49 @@
+@startuml container_agent_alt.puml
+title Livestock Monitoring System - Container Diagram (Agent Side, Alternative)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+' Actors
+
+Person(farm_supervisor, "Farm Supervisor", "Manages and monitors livestock and farm systems on-site")
+
+' External Systems
+
+System_Ext(video_cameras_ext, "Video Cameras", "Provides video feed")
+System_Ext(local_notification_ext, "On-site Notification System", "Sends alerts to farm staff via SMS/Email/Push")
+System_Ext(neural_network_ext, "Neural Network Service", "Processes video feeds for anomaly detection / counting")
+System_Ext(feeder_system_ext, "Feeder Control System", "Manages automated feeding systems")
+System_Ext(water_system_ext, "Water Filtering System", "Manages water quality systems")
+
+' LMS
+
+System_Boundary(lms_boundary, "Livestock Monitoring System") {
+
+  Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems.")
+
+  ' Agent System Boundary
+
+  System_Boundary(system_farm, "Agent System (Farm)") {
+    System_Boundary(edge_devices_boundary, "Edge Devices Controllers") {
+      Container(video_analytics, "Video Analytics", "C++", "Integrates with external video analytics system, analyzes video feeds")
+      Container(feeder_controller, "Feeder Controller", "Python", "Controls automated feeding systems")
+      Container(water_controller, "Water System Controller", "Python", "Controls water quality systems")
+    }
+    Container(agent_notifier, "Agent Notification Service", "Python", "Sends local alerts to farm staff")
+
+    Rel(video_cameras_ext, video_analytics, "Sends video feeds", "RTSP / ONVIF")
+    Rel(neural_network_ext, video_analytics, "Provides video analysis", "gRPC")
+    Rel(feeder_system_ext, feeder_controller, "Provides feeder metrics and control", "HTTPS")
+    Rel(water_system_ext, water_controller, "Provides water quality metrics and control", "HTTPS")
+    Rel(edge_devices_boundary, broker, "Sends data, receives commands", "MQTT")
+    Rel(edge_devices_boundary, agent_notifier, "Sends alerts to", "JSON / HTTPS")
+    Rel(agent_notifier, local_notification_ext, "Sends alerts and notifications", "JSON / HTTPS")
+    Rel(local_notification_ext, farm_supervisor, "Sends alerts and notifications", "SMS/Email/Push")
+  }
+}
+
+
+
+@enduml

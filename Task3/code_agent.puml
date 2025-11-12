@@ -1,0 +1,57 @@
+@startuml code_agent
+title Livestock Monitoring System - Code Diagram (Agent System)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+package "Business Logic" {
+  class BusinessLogic {
+  }
+
+  class BusinessLogicImpl {
+  }
+
+  class Message {
+    + String message
+  }
+  class Data {
+    + Object data
+  }
+  class Alarm {
+    + String notification
+    + String severity
+  }
+
+  class MessageHandler {
+    + handleMessage(Message)
+  }
+  class DataHandler {
+    + sendData(Data)
+  }
+  class MessagingService {
+  }
+  class AlarmService {
+    + triggerAlarm(Alarm)
+  }
+  class RepositoryAccess {
+    + readData(query)
+    + writeData(Data)
+  }
+
+  BusinessLogic --> BusinessLogicImpl : "is implemented by"
+  BusinessLogicImpl --> MessagingService : "uses"
+  BusinessLogicImpl --> MessageHandler : "delegates to"
+  BusinessLogicImpl --> DataHandler : "delegates to"
+  MessagingService --> Data : "sends"
+  MessagingService --> Message : "receives"
+  MessageHandler --> Message : "processes"
+  DataHandler --> Data : "creates"
+  BusinessLogicImpl --> AlarmService : "delegates to"
+  AlarmService --> Alarm : "triggers"
+  DataHandler --> RepositoryAccess : "reads / writes"
+}
+
+
+@enduml
