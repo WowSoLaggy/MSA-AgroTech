@@ -22,6 +22,7 @@ System_Ext(water_system_ext, "Water Filtering System", "Manages water quality sy
 System_Boundary(lms_boundary, "Livestock Monitoring System") {
 
   Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems.")
+  System_Ext(central_system_ext, "Central System", "Manages multiple farms and aggregates data")
 
   ' Agent System Boundary
 
@@ -47,6 +48,7 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
     Rel(agent_management_app, agent_notifier, "Sends alerts to", "JSON / HTTPS")
     Rel(agent_management_app, db_farm, "Read from / writes to", "SQL / TCP")
     Rel(agent_management_app, broker, "Sends data, receives commands", "MQTT")
+    Rel_R(broker, central_system_ext, "Communicates with", "JSON / HTTPS", "1..1")
     Rel(agent_notifier, local_notification_ext, "Sends alerts and notifications", "JSON / HTTPS")
     Rel(local_notification_ext, farm_supervisor, "Sends alerts and notifications", "SMS/Email/Push")
   }

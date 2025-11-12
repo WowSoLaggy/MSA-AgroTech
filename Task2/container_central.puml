@@ -21,6 +21,7 @@ System_Ext(central_notification_ext, "Central Notification System", "Sends alert
 System_Boundary(lms_boundary, "Livestock Monitoring System") {
 
   Container(broker, "Message Broker", "RabbitMQ", "Handles communication between central system and farm systems.")
+  System_Ext(agent_system_ext, "Agent Systems", "On-site systems managing individual farms")
 
   ' Central System Boundary
 
@@ -45,6 +46,7 @@ System_Boundary(lms_boundary, "Livestock Monitoring System") {
     Rel(api_central, bi_tools_ext, "Provides metrics to", "JSON / HTTPS")
     Rel(api_central, central_notification_ext, "Sends alerts to", "SMS/Email/Push")
     Rel(api_central, broker, "Sends commands to / receives data from", "JSON / HTTPS")
+    Rel_R(broker, agent_system_ext, "Communicates with", "JSON / HTTPS", "1..*")
   }
 }
 

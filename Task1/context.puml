@@ -12,23 +12,32 @@ Person(farm_manager, "Farm Operations Manager", "Manages multiple farms")
 Person(farm_supervisor, "Farm Supervisor", "Manages and monitors livestock and farm systems on-site")
 Person(ba, "Business Analyst", "Analyzes metrics")
 
-' Systems
+' Ext systems
 
-System(lms, "Livestock Monitoring System", "Monitors livestock health and location using IoT devices")
 System_Ext(notifications_local_ext, "On-site Notification Service", "Sends alerts and notifications using local infrastructure")
 System_Ext(notifications_central_ext, "Central Notification Service", "Sends alerts and notifications")
 System_Ext(iot_ext, "IoT Devices", "Collects and analyzes data from various sensors and cameras")
 
-Rel(lms, notifications_local_ext, "Sends on-site alerts and notifications")
-Rel(notifications_local_ext, farm_supervisor, "Sends on-site alerts and notifications to local supervisor")
-Rel(farm_supervisor, lms, "Manages")
+' Systems
 
-Rel(farm_manager, lms, "Oversees multiple farms")
-Rel(ba, lms, "Analyzes")
-Rel(lms, notifications_central_ext, "Sends alerts and notifications to management")
-Rel(notifications_central_ext, farm_manager, "Sends alerts and notifications to management")
+System_Boundary(lms_boundary, "Livestock Monitoring System") {
+  System(lms, "Central System", "Manages multiple farms and aggregates data")
+  System(broker, "Message Broker", "Facilitates communication between Central System and multiple Agent Systems")
+  System(agent, "Agent System", "Monitors and manages a single farm on-site")
 
-Rel(iot_ext, lms, "Receives real-time data")
+  Rel_Neighbor(lms, broker, "Communicates and manages farms via", "", "1..1")
+  Rel_Neighbor(broker, agent, "Sends and receives data to / from", "", "1..*")
+
+  Rel(farm_manager, lms, "Oversees multiple farms")
+  Rel(farm_supervisor, lms, "Manages")
+  Rel(ba, lms, "Analyzes")
+  Rel(lms, notifications_central_ext, "Sends alerts and notifications to management")
+  Rel(notifications_local_ext, farm_supervisor, "Sends on-site alerts and notifications to local supervisor")
+  Rel(notifications_central_ext, farm_manager, "Sends alerts and notifications to management")
+
+  Rel(iot_ext, agent, "Receives real-time data")
+  Rel(agent, notifications_local_ext, "Sends on-site alerts and notifications")
+}
 
 
 @enduml
